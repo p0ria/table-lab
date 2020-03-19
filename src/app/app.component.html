@@ -1,0 +1,20 @@
+<app-table [items]="items" sort="date">
+  <app-table-header>
+    <app-table-header-cell field="group" flex="1">گروه</app-table-header-cell>
+    <app-table-header-cell field="title" flex="1">عنوان</app-table-header-cell>
+    <app-table-header-cell field="capacity" flex="0 0 90px" [isCenter]="true">ظرفیت</app-table-header-cell>
+    <app-table-header-cell field="duration" flex="0 0 100px" [isCenter]="true">مدت</app-table-header-cell>
+    <app-table-header-cell field="date" flex="0 0 120px" [isCenter]="true">تاریخ</app-table-header-cell>
+  </app-table-header>
+  <app-table-body>
+    <app-table-row *ngFor="let item of items">
+      <app-table-row-cell >{{item.group}}</app-table-row-cell>
+      <app-table-row-cell >{{item.title}}</app-table-row-cell>
+      <app-table-row-cell >{{item.capacity}}</app-table-row-cell>
+      <app-table-row-cell >{{item.duration}}</app-table-row-cell>
+      <app-table-row-cell >{{item.date}}</app-table-row-cell>
+    </app-table-row>
+  </app-table-body>
+</app-table>
+<button style="margin-top: 100px" (click)="change()">Change</button>
+<input type="number" (input)="oninput($event)" >

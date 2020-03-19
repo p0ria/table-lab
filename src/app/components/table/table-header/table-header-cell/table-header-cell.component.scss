@@ -1,0 +1,44 @@
+@import "src/mixins";
+:host {
+  margin: 0 0 0 2px;
+  user-select: none;
+  &:last-child {
+    margin-left: 0;
+  }
+  &.center {
+    .table-header-cell {
+      justify-content: center;
+    }
+  }
+  &.asc, &.des {
+    .table-header-cell {
+      &::before {
+        display: block;
+      }
+    }
+  }
+  &.des {
+    .table-header-cell {
+      &::before {
+        transform: scale(2) rotateX(180deg);
+      }
+    }
+  }
+
+  .table-header-cell {
+    background-color: #EFEFEF;
+    border: 1px solid #ccc;
+    border-radius: 3px 3px 0 0;
+    padding: 3px 10px;
+    @include centerVertical;
+    cursor: pointer;
+    &::before {
+      content: '▾';
+      transform: scale(2);
+      margin-left: 5px;
+      color: rgba(0, 0, 0, .8);
+      display: none;
+    }
+  }
+}
+

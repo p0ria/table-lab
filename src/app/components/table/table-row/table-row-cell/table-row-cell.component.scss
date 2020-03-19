@@ -1,0 +1,19 @@
+@import "src/mixins";
+
+:host {
+  display: flex;
+  &.center {
+    .table-row-cell {
+      justify-content: center;
+    }
+  }
+
+  .table-row-cell {
+    flex: 1;
+    margin: 0 0 0 2px;
+    padding: 0 10px;
+    @include centerVertical;
+
+  }
+}
+

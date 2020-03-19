@@ -1,0 +1,8 @@
+@import "src/mixins";
+
+.table {
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  background-color: #fff;
+}
