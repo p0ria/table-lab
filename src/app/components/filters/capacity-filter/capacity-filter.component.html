@@ -1,0 +1,10 @@
+<div class="items">
+  <label class="item">
+    <input class="item-input" type="checkbox" [defaultChecked]="isAvailableChecked" (change)="availableCheckChanged($event.target.checked)">
+    <span class="item-title">موجود</span>
+  </label>
+  <label class="item">
+    <input class="item-input" type="checkbox" [defaultChecked]="isUnAvailableChecked" (change)="unAvailableCheckChanged($event.target.checked)" >
+    <span class="item-title">ناموجود</span>
+  </label>
+</div>

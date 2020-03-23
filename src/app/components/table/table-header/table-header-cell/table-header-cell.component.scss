@@ -2,8 +2,38 @@
 :host {
   margin: 0 0 0 2px;
   user-select: none;
+  position: relative;
   &:last-child {
     margin-left: 0;
+  }
+
+  .table-header-cell {
+    background-color: #EFEFEF;
+    border: 1px solid #ccc;
+    border-radius: 3px 3px 0 0;
+    padding: 3px 10px;
+    @include centerVertical;
+    cursor: pointer;
+    &::before {
+      content: '▾';
+      transform: scale(2);
+      margin-left: 5px;
+      color: rgba(0, 0, 0, .8);
+      display: none;
+    }
+
+    .filter-icon {
+      display: none;
+      margin-right: 5px;
+      color: rgba(0, 0, 0, .5);
+      &:hover {
+        color: rgba(0, 0, 0, .8);
+      }
+    }
+
+    &::ng-deep app-table-header-cell-filter {
+      visibility: hidden;
+    }
   }
   &.center {
     .table-header-cell {
@@ -24,20 +54,28 @@
       }
     }
   }
-
-  .table-header-cell {
-    background-color: #EFEFEF;
-    border: 1px solid #ccc;
-    border-radius: 3px 3px 0 0;
-    padding: 3px 10px;
-    @include centerVertical;
-    cursor: pointer;
-    &::before {
-      content: '▾';
-      transform: scale(2);
-      margin-left: 5px;
-      color: rgba(0, 0, 0, .8);
-      display: none;
+  &.filter {
+    .table-header-cell {
+      &:hover {
+        .filter-icon {
+          display: block;
+        }
+      }
+    }
+  }
+  &.filter-active {
+    .table-header-cell {
+      .filter-icon {
+        display: block;
+        color: #00CCCC;
+      }
+    }
+  }
+  &.filter-open {
+    .table-header-cell {
+      &::ng-deep app-table-header-cell-filter {
+        visibility: visible;
+      }
     }
   }
 }

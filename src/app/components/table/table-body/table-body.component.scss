@@ -1,6 +1,11 @@
-.table-body {
-  flex: 1;
-  display: flex;
-  flex-flow: column nowrap;
-  font-size: 13px;
+:host {
+  height: 100%;
+  overflow: auto;
+
+  .table-body {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    font-size: 13px;
+  }
 }

@@ -2,15 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, View
 import {interval, Observable, onErrorResumeNext} from "rxjs";
 import {take} from "rxjs/operators";
 import {TableRowComponent} from "./components/table/table-row/table-row.component";
-
-interface Item {
-  group: string,
-  title: string,
-  capacity: string,
-  duration: string,
-  date: string
-}
-
+import {Item} from "./interfaces/item.interface";
 
 @Component({
   selector: 'app-root',
@@ -52,7 +44,7 @@ export class AppComponent implements OnInit{
     this.items = [...this.items, {
       group: 'دنا و سی سخت',
       title: 'خانه‌سنتی- اتوبوس VIP- خفر تا مارگون',
-      capacity: 'موجود',
+      capacity: 'ناموجود',
       duration: '3.5 روزه',
       date: '1399/01/19'
     }];

@@ -14,6 +14,8 @@ import {
 import {TableHeaderCellComponent} from "./table-header/table-header-cell/table-header-cell.component";
 import {TableRowCellComponent} from "./table-row/table-row-cell/table-row-cell.component";
 import {BehaviorSubject, combineLatest} from "rxjs";
+import {TableHeaderCellFilterComponent} from "./table-header/table-header-cell/table-header-cell-filter/table-header-cell-filter.component";
+import {Filterable} from "../../interfaces/filterable.interface";
 
 @Component({
   selector: 'app-table',
@@ -31,21 +33,25 @@ export class TableComponent implements OnInit, AfterViewInit{
   @ContentChildren(TableHeaderCellComponent, {descendants: true}) headerCellComponents: QueryList<TableHeaderCellComponent>;
   @ContentChildren(TableRowCellComponent, {descendants: true, read: ElementRef}) rowCellElements: QueryList<ElementRef>;
   @ContentChildren(TableHeaderCellComponent, {descendants: true, read: ElementRef}) headerCellElements: QueryList<ElementRef>;
+  @ContentChildren(TableHeaderCellFilterComponent, {descendants: true}) filterCellComponents: QueryList<TableHeaderCellFilterComponent>;
+
   displayItems = [];
   items$ = new BehaviorSubject<any[]>([]);
   sort$ = new BehaviorSubject<{field: string, asc: boolean}>(null);
   search$ = new BehaviorSubject<string>(null);
+  filter$ = new BehaviorSubject<Filterable<any>[]>([]);
 
   private sortField: string;
   constructor(private renderer: Renderer2) { }
 
   ngOnInit(): void {
-    combineLatest(this.items$, this.search$, this.sort$)
-      .subscribe(([items, search, sort]) => {
-        let filteredItems = this.filterItems(items, search);
+    combineLatest(this.items$, this.search$, this.sort$, this.filter$)
+      .subscribe(([items, search, sort, filters]) => {
+        let filteredItems = this.filterItems(items, filters);
+        let searchedItems = this.searchItems(filteredItems, search);
         let sortFiled = sort ? sort.field : null;
         let sortAsc = sort ? sort.asc : null;
-        let sortedItems = this.sortItems(filteredItems, sortFiled, sortAsc);
+        let sortedItems = this.sortItems(searchedItems, sortFiled, sortAsc);
         this.displayItems = sortedItems;
       })
   }
@@ -56,6 +62,7 @@ export class TableComponent implements OnInit, AfterViewInit{
       this.bindRows();
     });
     this.bindSorting();
+    this.bindFiltering();
   }
 
   bindRows() {
@@ -82,6 +89,22 @@ export class TableComponent implements OnInit, AfterViewInit{
     })
   }
 
+  bindFiltering() {
+    let filterCells = this.filterCellComponents.toArray();
+    filterCells.forEach(filterCell => {
+      filterCell.filter.filterChanged.subscribe(filter => {
+        let filters = [...this.filter$.value];
+        if(filter) {
+          if(!filters.includes(filterCell.filter))
+            filters.push(filterCell.filter);
+        } else {
+          filters = filters.filter(f => f !== filterCell.filter);
+        }
+        this.filter$.next(filters);
+      });
+    });
+  }
+
   sortItems(items: any[], field = null, asc: boolean = true): any[] {
     if(!items || items.length == 0) return [];
     let sortedItems = [...items];
@@ -97,20 +120,27 @@ export class TableComponent implements OnInit, AfterViewInit{
     return sortedItems;
   }
 
-  filterItems(items: any[], filter): any[]{
+  filterItems(items: any[], filters: Filterable<any>[]): any[] {
+    if(!items || !items.length) return [];
+    if(!filters || !filters.length) return items;
+    let filteredItems = items.filter(item => filters.every(filter => filter.filter(item)));
+    return filteredItems;
+  }
+
+  searchItems(items: any[], search): any[] {
     if(!items || items.length == 0) return [];
-    if(!filter) return items;
-    let filteredItems = [];
-    items.forEach(item => filteredItems.push({...item}));
-    return filteredItems.filter(item =>
+    if(!search) return items;
+    let searchedItems = [];
+    items.forEach(item => searchedItems.push({...item}));
+    return searchedItems.filter(item =>
       Object.entries(item).some(entry => {
         const key = entry[0];
         const value = entry[1];
         const valueText = value.toString();
-        const index = valueText.indexOf(filter);
+        const index = valueText.indexOf(search);
         if(index == -1) return false;
         if(typeof value == 'string') {
-          let highlightedValue = valueText.substring(0,index) + "<span class='highlight'>" + valueText.substring(index, index + filter.length) + "</span>" + valueText.substring(index + filter.length);
+          let highlightedValue = valueText.substring(0,index) + "<span class='highlight'>" + valueText.substring(index, index + search.length) + "</span>" + valueText.substring(index + search.length);
           item[key] = highlightedValue;
         }
         return true;

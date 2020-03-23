@@ -2,11 +2,12 @@
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 0;
+
+  .table-header {
+    display: flex;
+    flex-flow: row nowrap;
+    font-size: 14px;
+  }
 }
 
-.table-header {
-  flex: 0 0 30px;
-  display: flex;
-  flex-flow: row nowrap;
-  font-size: 14px;
-}
+

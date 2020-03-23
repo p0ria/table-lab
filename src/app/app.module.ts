@@ -11,6 +11,9 @@ import { TableBodyComponent } from './components/table/table-body/table-body.com
 import { TableSearchComponent } from './components/table/table-search/table-search.component';
 import {DalahooTableModule} from "ng-dalahoo-table";
 import { HighlightMatchDirective } from './directives/highlight-match.directive';
+import {TableHeaderCellFilterComponent} from "./components/table/table-header/table-header-cell/table-header-cell-filter/table-header-cell-filter.component";
+import { CapacityFilterComponent } from './components/filters/capacity-filter/capacity-filter.component';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 @NgModule({
   declarations: [
@@ -23,6 +26,9 @@ import { HighlightMatchDirective } from './directives/highlight-match.directive'
     TableBodyComponent,
     TableSearchComponent,
     HighlightMatchDirective,
+    TableHeaderCellFilterComponent,
+    CapacityFilterComponent,
+    ClickOutsideDirective,
   ],
   imports: [
     BrowserModule,

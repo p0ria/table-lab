@@ -1,3 +1,5 @@
-<div class="table-header-cell">
+<div class="table-header-cell" (clickOutside)="isFilterOpen = false">
   <ng-content></ng-content>
+  <i class="filter-icon fa fa-filter" (click)="toggleFilterOpen($event)"></i>
+  <ng-content select="app-table-header-cell-filter"></ng-content>
 </div>
