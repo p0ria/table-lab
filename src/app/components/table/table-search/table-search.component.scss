@@ -1,0 +1,33 @@
+:host{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+
+  .table-search {
+    flex: 0 0 250px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      border: none;
+      outline: none;
+      line-height: 10px;
+      padding: 0 7px 0 5px;
+      font-size: 13px;
+    }
+
+    .search-icon {
+      flex: 0 0 auto;
+      padding: 5px;
+      cursor: pointer;
+      color: rgba(0, 0, 0, .6);
+    }
+  }
+}
+

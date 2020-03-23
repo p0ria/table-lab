@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "table-lab": {
@@ -92,7 +92,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "../node_modules/font-awesome/scss/font-awesome.scss"
             ],
             "scripts": []
           }
@@ -123,6 +124,47 @@
           }
         }
       }
-    }},
+    },
+    "NgDalahooTable": {
+      "projectType": "library",
+      "root": "projects/ng-dalahoo-table",
+      "sourceRoot": "projects/ng-dalahoo-table/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ng-dalahoo-table/tsconfig.lib.json",
+            "project": "projects/ng-dalahoo-table/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-dalahoo-table/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-dalahoo-table/src/test.ts",
+            "tsConfig": "projects/ng-dalahoo-table/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-dalahoo-table/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ng-dalahoo-table/tsconfig.lib.json",
+              "projects/ng-dalahoo-table/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+    },
   "defaultProject": "table-lab"
 }

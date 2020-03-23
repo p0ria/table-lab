@@ -1,5 +1,5 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
+import {NgModule, Sanitizer} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TableComponent } from './components/table/table.component';
@@ -8,6 +8,9 @@ import { TableRowCellComponent } from './components/table/table-row/table-row-ce
 import { TableHeaderCellComponent } from './components/table/table-header/table-header-cell/table-header-cell.component';
 import { TableHeaderComponent } from './components/table/table-header/table-header.component';
 import { TableBodyComponent } from './components/table/table-body/table-body.component';
+import { TableSearchComponent } from './components/table/table-search/table-search.component';
+import {DalahooTableModule} from "ng-dalahoo-table";
+import { HighlightMatchDirective } from './directives/highlight-match.directive';
 
 @NgModule({
   declarations: [
@@ -17,10 +20,13 @@ import { TableBodyComponent } from './components/table/table-body/table-body.com
     TableRowCellComponent,
     TableHeaderCellComponent,
     TableHeaderComponent,
-    TableBodyComponent
+    TableBodyComponent,
+    TableSearchComponent,
+    HighlightMatchDirective,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    DalahooTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

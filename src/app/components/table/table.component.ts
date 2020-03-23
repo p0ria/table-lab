@@ -4,16 +4,16 @@ import {
   Component,
   ContentChildren,
   ElementRef,
-  Input, OnChanges,
+  Input,
+  OnChanges,
   OnInit,
   QueryList,
-  Renderer2, SimpleChanges
+  Renderer2,
+  SimpleChanges
 } from '@angular/core';
 import {TableHeaderCellComponent} from "./table-header/table-header-cell/table-header-cell.component";
 import {TableRowCellComponent} from "./table-row/table-row-cell/table-row-cell.component";
-
-const ascClass = 'asc';
-const desClass = 'des';
+import {BehaviorSubject, combineLatest} from "rxjs";
 
 @Component({
   selector: 'app-table',
@@ -21,30 +21,44 @@ const desClass = 'des';
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent implements OnInit, AfterViewInit, OnChanges{
-  @Input() sort: string;
-  @Input() items = [];
+export class TableComponent implements OnInit, AfterViewInit{
+  @Input() set sort(value: string){
+    this.sort$.next( {field: value, asc: null});
+  }
+  @Input() set items(value: any[]) {
+    this.items$.next(value);
+  }
   @ContentChildren(TableHeaderCellComponent, {descendants: true}) headerCellComponents: QueryList<TableHeaderCellComponent>;
   @ContentChildren(TableRowCellComponent, {descendants: true, read: ElementRef}) rowCellElements: QueryList<ElementRef>;
   @ContentChildren(TableHeaderCellComponent, {descendants: true, read: ElementRef}) headerCellElements: QueryList<ElementRef>;
+  displayItems = [];
+  items$ = new BehaviorSubject<any[]>([]);
+  sort$ = new BehaviorSubject<{field: string, asc: boolean}>(null);
+  search$ = new BehaviorSubject<string>(null);
 
   private sortField: string;
   constructor(private renderer: Renderer2) { }
 
   ngOnInit(): void {
-
+    combineLatest(this.items$, this.search$, this.sort$)
+      .subscribe(([items, search, sort]) => {
+        let filteredItems = this.filterItems(items, search);
+        let sortFiled = sort ? sort.field : null;
+        let sortAsc = sort ? sort.asc : null;
+        let sortedItems = this.sortItems(filteredItems, sortFiled, sortAsc);
+        this.displayItems = sortedItems;
+      })
   }
 
   ngAfterViewInit(): void {
-    this.updateRows();
+    this.bindRows();
     this.rowCellElements.changes.subscribe(() => {
-      this.updateRows();
+      this.bindRows();
     });
     this.bindSorting();
-    this.sortBy()
   }
 
-  updateRows() {
+  bindRows() {
     let headerCells = this.headerCellComponents.toArray();
     let rowCells = this.rowCellElements.toArray();
     for(let i = 0; i < rowCells.length; i++) {
@@ -60,23 +74,48 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges{
     headerCells.forEach(headerCellElement => {
       let header = headerCellElement.nativeElement as HTMLElement;
       let field = header.getAttribute('field');
-      if(field) header.onclick = () => this.sortBy(field, true);
+      if(field) header.onclick = () => {
+        let toggle = this.sortField === field;
+        let asc = this.sort$ && this.sort$.value && this.sort$.value.asc;
+        this.sort$.next({field: field, asc: toggle ? !asc : true});
+      };
     })
   }
 
-  private lt = -1;
-  sortBy(field = null, toggle: boolean = false) {
-    toggle = toggle && this.sortField === field;
+  sortItems(items: any[], field = null, asc: boolean = true): any[] {
+    if(!items || items.length == 0) return [];
+    let sortedItems = [...items];
     this.sortField = field || this.sortField;
-    if(toggle) this.lt = -1 * this.lt;
 
     if(this.sortField) {
-      this.addSortClassToHeaderCell(this.lt < 0);
-      this.items.sort((a, b) => {
-        if(this.lt < 0) return a[this.sortField] <= b[this.sortField] ? -1 : 1;
+      this.addSortClassToHeaderCell(asc);
+      sortedItems.sort((a, b) => {
+        if(asc) return a[this.sortField] <= b[this.sortField] ? -1 : 1;
         else return a[this.sortField] < b[this.sortField] ? 1 : -1;
       });
     }
+    return sortedItems;
+  }
+
+  filterItems(items: any[], filter): any[]{
+    if(!items || items.length == 0) return [];
+    if(!filter) return items;
+    let filteredItems = [];
+    items.forEach(item => filteredItems.push({...item}));
+    return filteredItems.filter(item =>
+      Object.entries(item).some(entry => {
+        const key = entry[0];
+        const value = entry[1];
+        const valueText = value.toString();
+        const index = valueText.indexOf(filter);
+        if(index == -1) return false;
+        if(typeof value == 'string') {
+          let highlightedValue = valueText.substring(0,index) + "<span class='highlight'>" + valueText.substring(index, index + filter.length) + "</span>" + valueText.substring(index + filter.length);
+          item[key] = highlightedValue;
+        }
+        return true;
+      })
+    );
   }
 
   addSortClassToHeaderCell(asc: boolean) {
@@ -91,8 +130,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnChanges{
     })
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.sortBy(changes.sort? changes.sort.currentValue : null);
+  searchChanged($event: string) {
+    this.search$.next($event);
   }
-
 }

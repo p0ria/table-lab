@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {interval, Observable, onErrorResumeNext} from "rxjs";
 import {take} from "rxjs/operators";
+import {TableRowComponent} from "./components/table/table-row/table-row.component";
 
 interface Item {
   group: string,
@@ -18,7 +19,6 @@ interface Item {
 })
 export class AppComponent implements OnInit{
   items: Item[] = [];
-  sortFiled: string;
 
   ngOnInit(): void {
     this.items = [
@@ -56,9 +56,6 @@ export class AppComponent implements OnInit{
       duration: '3.5 روزه',
       date: '1399/01/19'
     }];
-  }
-
-  oninput(event: Event) {
   }
 }
 

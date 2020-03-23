@@ -1,4 +1,4 @@
-<app-table [items]="items" sort="date">
+<app-table [items]="items" #table>
   <app-table-header>
     <app-table-header-cell field="group" flex="1">گروه</app-table-header-cell>
     <app-table-header-cell field="title" flex="1">عنوان</app-table-header-cell>
@@ -7,14 +7,23 @@
     <app-table-header-cell field="date" flex="0 0 120px" [isCenter]="true">تاریخ</app-table-header-cell>
   </app-table-header>
   <app-table-body>
-    <app-table-row *ngFor="let item of items">
-      <app-table-row-cell >{{item.group}}</app-table-row-cell>
-      <app-table-row-cell >{{item.title}}</app-table-row-cell>
-      <app-table-row-cell >{{item.capacity}}</app-table-row-cell>
-      <app-table-row-cell >{{item.duration}}</app-table-row-cell>
-      <app-table-row-cell >{{item.date}}</app-table-row-cell>
+    <app-table-row *ngFor="let item of table.displayItems">
+      <app-table-row-cell >
+        <span [highlightMatch]="item.group"></span>
+      </app-table-row-cell>
+      <app-table-row-cell >
+        <span [highlightMatch]="item.title"></span>
+      </app-table-row-cell>
+      <app-table-row-cell >
+        <span [innerHTML]="item.capacity"></span>
+      </app-table-row-cell>
+      <app-table-row-cell>
+        <span [innerHTML]="item.duration"></span>
+      </app-table-row-cell>
+      <app-table-row-cell>
+        <span [innerHTML]="item.date"></span>
+      </app-table-row-cell>
     </app-table-row>
   </app-table-body>
 </app-table>
 <button style="margin-top: 100px" (click)="change()">Change</button>
-<input type="number" (input)="oninput($event)" >

@@ -1,4 +1,5 @@
 <div class="table">
+  <app-table-search (searchChanged)="searchChanged($event)"></app-table-search>
   <ng-content select="app-table-header"></ng-content>
   <ng-content select="app-table-body"></ng-content>
 </div>

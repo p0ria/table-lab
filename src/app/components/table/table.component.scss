@@ -1,8 +1,23 @@
 @import "src/mixins";
 
-.table {
-  flex: 1;
-  display: flex;
-  flex-flow: column nowrap;
-  background-color: #fff;
+:host {
+  &::ng-deep {
+    .highlight {
+      color: var(--search-highlight-color, darkorange);
+      font-weight: bold;
+    }
+  }
+
+  .table {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: #fff;
+
+    app-table-search {
+      flex: 0 0 35px;
+    }
+
+  }
 }
+
